@@ -95,6 +95,15 @@ public class AddressBook {
         }
     }
 
+    //calling method to view contact details by using city name
+    public void viewByCity() {
+        System.out.println("Enter City Name : ");
+        String city = sc.nextLine();
+        for (Contact list : list) {
+            if(list.getCity().equals(city))
+                System.out.println(list);
+        }
+    }
     public static void main(String[] args) {
 
         AddressBook addressBook = new AddressBook();
@@ -102,7 +111,7 @@ public class AddressBook {
         System.out.println("WELCOME TO ADDRESS BOOK PROBLEM");
         //adding multiple persons
         addPersons();
-        //Searching by city
-        searchByCity();
+        //Viewing details by city name
+        addressBook.viewByCity();
     }
 }
