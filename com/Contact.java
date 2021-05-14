@@ -9,7 +9,7 @@ public class Contact {
     private String city;
     private String state;
     private String zip;
-    private String phno;
+    private long phno;
     private String email;
 
     @Override
@@ -20,7 +20,7 @@ public class Contact {
     }
 
     //called contact class for creating contacts with given details
-    public Contact(String firstName, String lastName, String address, String city, String state, String zip, String phoneNo, String email)
+    public Contact(String firstName, String lastName, String address, String city, String state, String zip, long phoneNo, String email)
     {
         super();
         this.firstName = firstName;
@@ -71,10 +71,10 @@ public class Contact {
     public void setZip(String zip) {
         this.zip = zip;
     }
-    public String getPhoneNo() {
+    public long getPhoneNo() {
         return phno;
     }
-    public void setPhoneNo(String phno) {
+    public void setPhoneNo(long phno) {
         this.phno = phno;
     }
     public String getEmail() {
