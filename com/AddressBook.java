@@ -1,8 +1,10 @@
 package com;
 
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class AddressBook {
 
@@ -105,23 +107,24 @@ public class AddressBook {
         }
     }
     /*Count number of contact persons based on city*/
+    /*Count number of contact persons based on city using stream*/
     public void countBasedOnCity()
     {
         int count = 0;
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter city name : ");
         String city = sc.nextLine();
-        sc.close();
-        for (Contact list : list)
-        {
-            if (list.getCity().equals(city)) {
-                count++;
-                System.out.println(list);
-
-            }
-        }
+        count = (int) list.stream().filter(n -> n.getCity().equals(city)).count();
         System.out.println("TotalNo : " + count);
     }
+    
+    
+    //sort by name 
+    public void sortByName() {
+        list = list.stream().sorted(Comparator.comparing(Contact :: getCity)).collect(Collectors.toList());
+        list.forEach(i -> System.out.println(i));
+    }
+    
     public static void main(String[] args) {
 
         AddressBook addressBook = new AddressBook();
@@ -131,6 +134,7 @@ public class AddressBook {
         addPersons();
         //Result will show count by city name
         addressBook.countBasedOnCity();
+        addressBook.sortByName();
 
     }
 }
