@@ -125,6 +125,18 @@ public class AddressBook {
         list.forEach(i -> System.out.println(i));
     }
     
+    //Sorted all entries in alphabetically by contact city names
+    public void sortByState() {
+        list = list.stream().sorted(Comparator.comparing(Contact :: getState)).collect(Collectors.toList());
+        list.forEach(i -> System.out.println(i));
+    }
+    
+    //Sorted all entries in alphabetically by contact city names
+    public void sortByCity() {
+        list = list.stream().sorted(Comparator.comparing(Contact :: getCity)).collect(Collectors.toList());
+        list.forEach(i -> System.out.println(i));
+    }
+    
     public static void main(String[] args) {
 
         AddressBook addressBook = new AddressBook();
@@ -133,8 +145,8 @@ public class AddressBook {
         //adding multiple persons
         addPersons();
         //Result will show count by city name
-        addressBook.countBasedOnCity();
-        addressBook.sortByName();
+        addressBook.sortByState();
+        System.out.println(list);   // calling sorted list (use of stream)
 
     }
 }
