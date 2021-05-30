@@ -1,35 +1,44 @@
 package com;
 
-import java.util.Comparator;
-import java.util.LinkedList;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
+
 
 public class AddressBook {
 
     static Scanner sc = new Scanner(System.in);
-    static List<Contact> list = new LinkedList<Contact>();
+
+    public enum  IOService {
+        CONSOLE_IO, FILE_IO, DB_IO, REST_IO
+    }
+
+    public static List<Contact>list;
+
+    public AddressBook(List<Contact> list){
+        super();
+        AddressBook.list = list;
+    }
+
 
     //Created method for adding contact
     public static void addContact()
     {
-    	
-    	
-    	 System.out.println("Enter your firstName : ");
-         String firstName = sc.nextLine();
-         for (int i = 0; i < list.size(); i++)
-         {
-             if (list.get(i).getFirstName().equalsIgnoreCase(firstName))
-             {
-                 System.out.println("Name already exists. Try another name");
-                 addPersons();
-                 break;
-             }
-         }
-         
         System.out.println("Enter your firstName : ");
-        String FirstName = sc.nextLine();
+        String firstName = sc.nextLine();
+        for (int i = 0; i < list.size(); i++)
+        {
+            if (list.get(i).getFirstName().equalsIgnoreCase(firstName))
+            {
+                System.out.println("Name already exists. Try another name");
+                addPersons();
+                break;
+            }
+        }
+
         System.out.println("Enter your lastName : ");
         String lastName = sc.nextLine();
         System.out.println("Enter your address : ");
@@ -44,13 +53,12 @@ public class AddressBook {
         long phoneNo = sc.nextLong();
         System.out.println("Enter your emailId : ");
         String email = sc.nextLine();
-        Contact obj = new Contact(FirstName, lastName, address, city, state, zip, phoneNo, email);
-        list.add(obj);
+        Contact contact = new Contact(firstName, lastName, address, city, state, zip, phoneNo, email);
+        list.add(contact);
     }
 
     //Created method for editing contact details
     public static void editContact() {
-        //Scanner sc = new Scanner(System.in);
         System.out.println("Enter first name: ");
         String firstName = sc.nextLine();
         for (int i = 0; i < list.size(); i++) {
@@ -63,17 +71,17 @@ public class AddressBook {
         }
     }
 
-        //Creating deleteContact() for deleting contact details using first name
-        public static void deleteContact() {
-            System.out.println("Enter first name : ");
-            String firstName = sc.nextLine();
-            for (int i = 0; i < list.size(); i++) {
-                if (list.get(i).getFirstName().equalsIgnoreCase(firstName)) {
-                    list.remove(i);
-                } else {
-                    System.out.println("No data found");
-                }
+    //Creating deleteContact() for deleting contact details using first name
+    public static void deleteContact() {
+        System.out.println("Enter first name : ");
+        String firstName = sc.nextLine();
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getFirstName().equalsIgnoreCase(firstName)) {
+                list.remove(i);
+            } else {
+                System.out.println("No data found");
             }
+        }
     }
 
     //Adding Multiple persons i.e contacts in address book
@@ -87,66 +95,46 @@ public class AddressBook {
         }
     }
 
-  //Called method searchByCity for searching contact details by city name
-    public static void searchByCity() {
+    //Called method searchByCity for searching contact details by city name
+    public void searchByCity() {
         System.out.println("Enter City Name : ");
-        String city = sc.nextLine();
-        for (Contact list : list) {
-            if(((Contact) list).getCity().equals(city))
-                System.out.println(list);
-        }
+        String city = sc.next();
+        list.stream().filter(n -> n.getCity().equals(city)).forEach(i -> System.out.println("Result: "+i.getFirstName()));
     }
 
     //calling method to view contact details by using city name
     public void viewByCity() {
         System.out.println("Enter City Name : ");
         String city = sc.nextLine();
-        for (Contact list : list) {
-            if(list.getCity().equals(city))
-                System.out.println(list);
-        }
+        list.stream().filter(n -> n.getCity().equals(city)).forEach(i -> System.out.println(i));
     }
+
     /*Count number of contact persons based on city*/
-    /*Count number of contact persons based on city using stream*/
-    public void countBasedOnCity()
-    {
-        int count = 0;
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Enter city name : ");
-        String city = sc.nextLine();
-        count = (int) list.stream().filter(n -> n.getCity().equals(city)).count();
-        System.out.println("TotalNo : " + count);
-    }
-    
-    
-    //sort by name 
-    public void sortByName() {
-        list = list.stream().sorted(Comparator.comparing(Contact :: getCity)).collect(Collectors.toList());
-        list.forEach(i -> System.out.println(i));
-    }
-    
-    //Sorted all entries in alphabetically by contact city names
-    public void sortByState() {
-        list = list.stream().sorted(Comparator.comparing(Contact :: getState)).collect(Collectors.toList());
-        list.forEach(i -> System.out.println(i));
-    }
-    
-    //Sorted all entries in alphabetically by contact city names
-    public void sortByCity() {
-        list = list.stream().sorted(Comparator.comparing(Contact :: getCity)).collect(Collectors.toList());
-        list.forEach(i -> System.out.println(i));
-    }
-    
-    public static void main(String[] args) {
 
-        AddressBook addressBook = new AddressBook();
-        //Displaying the welcome message
-        System.out.println("WELCOME TO ADDRESS BOOK PROBLEM");
-        //adding multiple persons
-        addPersons();
-        //Result will show count by city name
-        addressBook.sortByState();
-        System.out.println(list);   // calling sorted list (use of stream)
 
+    public long countEntries(IOService ioService) {
+        if (ioService.equals(IOService.FILE_IO))
+            return new AddressBookFileIOService().countEntries(ioService);
+        return 0;
+    }
+
+    //writing data from addressBook
+    public static void writeAddressBookData(IOService ioService) {
+        if (ioService.equals(com.AddressBook.IOService.CONSOLE_IO))
+            System.out.println("Employee Payroll to Details : " + list);
+        if (ioService.equals(com.AddressBook.IOService.FILE_IO))
+            new AddressBookFileIOService().writeData(list);
+    }
+
+    //Reading data from addressBook
+    public void readDataFromFile() {
+        System.out.println("Enter address book name: ");
+        String addressBookFile = sc.nextLine();
+        Path filePath = Paths.get("C:\\Users\\Muthyala Aishwarya\\git" + addressBookFile + ".txt");
+        try {
+            Files.lines(filePath).map(line -> line.trim()).forEach(line -> System.out.println(line));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
